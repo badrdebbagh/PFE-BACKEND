@@ -1,5 +1,6 @@
 package com.backend.backend_pfe.config;
 
+import com.backend.backend_pfe.model.UserModel;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -16,11 +17,15 @@ public class JwtProvider {
     private SecretKey key = Keys.hmacShaKeyFor(JwtConstant.SECRET_KEY.getBytes());
 
     public String generateToken(Authentication auth){
+        UserModel user = (UserModel) auth.getPrincipal();
         Collection<? extends GrantedAuthority>authorities = auth.getAuthorities();
         String roles = populateAuthorities(authorities);
 
         String jwt = Jwts.builder().setIssuedAt(new Date()).setExpiration(new Date(new Date().getTime() + 8640000))
+                .claim("userId", user.getId())
                 .claim("email" , auth.getName())
+                .claim("firstName", user.getFirstName())
+                .claim("lastName", user.getLastName())
                 .claim("authorities" , roles)
                 .signWith(key)
                 .compact();

@@ -25,22 +25,25 @@ public class AppConfig {
     SecurityFilterChain securityFilterChain( HttpSecurity http) throws Exception{
     http.sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(Authorize ->Authorize
-                    .requestMatchers("/api/createUser").permitAll()
-                    .requestMatchers("/api/deleteUser/{id}").permitAll()
-                    .requestMatchers("/auth/signin").permitAll()
-                    .requestMatchers("/api/allProjects").permitAll()
-                    .requestMatchers("/api/createProject").permitAll()
-                    .requestMatchers("/api/addUsersToProject/{projectId}").permitAll()
-                    .requestMatchers("/api/createProjectUser").permitAll()
-                    .requestMatchers("/api/user/project").permitAll()
-                    .requestMatchers("/api/suspendUser/{id}").permitAll()
-                    .requestMatchers("/api/allUsers/{userId}").permitAll()
-                    .requestMatchers("/api/userProjects").permitAll()
-                    .requestMatchers("/api/user/{userId}/project/{projectId}").permitAll()
-                    .requestMatchers("/api/find/{email}").permitAll()
-                    .requestMatchers("/api/allUsers").permitAll()
-                    .requestMatchers("/api/roles").permitAll()
-                    .requestMatchers("/api/admin/**").hasAnyRole("ADMIN")
+                            .requestMatchers("/api/**").permitAll()
+//                    .requestMatchers("/api/createUser").permitAll()
+//                    .requestMatchers("/api/deleteUser/{id}").permitAll()
+//                    .requestMatchers("/auth/signin").permitAll()
+//                    .requestMatchers("/api/allProjects").permitAll()
+//                    .requestMatchers("/api/userRoles").permitAll()
+//
+//                    .requestMatchers("/api/createProject").permitAll()
+//                    .requestMatchers("/api/addUsersToProject/{projectId}").permitAll()
+//                    .requestMatchers("/api/createProjectUser").permitAll()
+//                    .requestMatchers("/api/user/project").permitAll()
+//                    .requestMatchers("/api/suspendUser/{id}").permitAll()
+//                    .requestMatchers("/api/allUsers/{userId}").permitAll()
+//                    .requestMatchers("/api/userProjects").permitAll()
+//                    .requestMatchers("/api/user/{userId}/project/{projectId}").permitAll()
+//                    .requestMatchers("/api/find/{email}").permitAll()
+//                    .requestMatchers("/api/allUsers").permitAll()
+//                    .requestMatchers("/api/roles").permitAll()
+//                    .requestMatchers("/api/admin/**").hasAnyRole("ADMIN")
                     .requestMatchers("/api/**")
                     .authenticated()
                     .anyRequest().permitAll()
@@ -58,9 +61,10 @@ return new CorsConfigurationSource() {
         cfg.setAllowedOrigins(Arrays.asList(
                 "http://localhost:5001"
         ));
-        cfg.setAllowedMethods(Collections.singletonList("*"));
+
         cfg.setAllowCredentials(true);
-        cfg.setAllowedHeaders(Collections.singletonList("*"));
+        cfg.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        cfg.setAllowedHeaders(Arrays.asList("Authorization", "Cache-Control", "Content-Type"));
         cfg.setExposedHeaders(Arrays.asList("Authorization"));
         cfg.setMaxAge(3600L);
         return cfg;

@@ -1,15 +1,17 @@
 package com.backend.backend_pfe.controller;
 
 import com.backend.backend_pfe.Service.UserService;
+import com.backend.backend_pfe.model.USER_ROLE_PROJECTS;
 import com.backend.backend_pfe.model.UserModel;
 import com.backend.backend_pfe.repository.UserRepository;
 import org.apache.catalina.User;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@CrossOrigin(origins = "http://localhost:5001")
+
 @RestController
 @RequestMapping("/api")
 
@@ -42,8 +44,15 @@ public class UserController {
     }
 
     @PutMapping("/user/{userId}/project/{projectId}")
-    public UserModel assignProjectToEmployee(@PathVariable Long userId , @PathVariable Long projectId){
-return userService.assignProjectToEmployee(userId , projectId);
+    public ResponseEntity<?> assignProjectToEmployee(@PathVariable Long userId, @PathVariable Long projectId, @RequestBody USER_ROLE_PROJECTS role) {
+        try {
+
+            System.out.println("Attempting to assign role: " + role + " to userId: " + userId + " for projectId: " + projectId);
+            UserModel userModel = userService.assignProjectToEmployee(userId, projectId, role);
+            return ResponseEntity.ok(userModel);
+        } catch (RuntimeException ex) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+        }
     }
 
     @PutMapping("/suspendUser/{id}")

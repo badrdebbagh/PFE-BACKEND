@@ -16,8 +16,11 @@ public interface UserRepository extends JpaRepository<UserModel, Long> {
 
     public UserModel findByEmail(String username);
 
-    @Query("SELECT u FROM UserModel u JOIN FETCH u.projets WHERE u.email = :email")
-    UserModel findByEmailWithProjects(@Param("email") String email);
+//    @Query("SELECT u FROM UserModel u JOIN FETCH u.projets WHERE u.email = :email")
+//    UserModel findByEmailWithProjects(@Param("email") String email);
+
+    @Query("SELECT u FROM UserModel u LEFT JOIN FETCH u.projectAssignments pa LEFT JOIN FETCH pa.project WHERE u.email = :email")
+    UserModel findByEmailWithProjectAssignments(@Param("email") String email);
 
 
 

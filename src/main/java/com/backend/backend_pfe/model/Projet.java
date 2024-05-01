@@ -1,6 +1,7 @@
 package com.backend.backend_pfe.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -23,12 +24,25 @@ public class Projet {
 
     private String nom;
     private String description;
-    @JsonIgnore
-    @ManyToMany(mappedBy = "projets" , fetch = FetchType.LAZY)
-    private Set<UserModel> utilisateurs = new HashSet<>();
 
-    @ManyToMany(mappedBy = "projets")
-    private Set<Domaine> domaines = new HashSet<>();
+    @JsonIgnore
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<ProjectAssignment> projectAssignments = new HashSet<>();
+
+
+    @JsonIgnore
+    @OneToOne(mappedBy = "project", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private CahierDeTestGlobal cahierDeTestGlobal;
+
+    @Transient
+    @JsonProperty("chefDeProjet") // Include this property in JSON serialization
+    public String getChefDeProjet() {
+        return projectAssignments.stream()
+                .filter(assignment -> assignment.getRole() == USER_ROLE_PROJECTS.CHEF_DE_PROJECT)
+                .findFirst()
+                .map(assignment -> assignment.getUser().getFullName())
+                .orElse(null); // Returns null if no chef de projet is found.
+    }
 
 }
 

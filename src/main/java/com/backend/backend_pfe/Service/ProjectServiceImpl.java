@@ -1,13 +1,15 @@
 package com.backend.backend_pfe.Service;
 
 
-import com.backend.backend_pfe.model.Projet;
-import com.backend.backend_pfe.model.UserModel;
+import com.backend.backend_pfe.dto.ProjectDTO;
+import com.backend.backend_pfe.model.*;
+import com.backend.backend_pfe.repository.CahierDeTestGlobalRepository;
 import com.backend.backend_pfe.repository.ProjectRepository;
 import com.backend.backend_pfe.repository.UserRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -19,9 +21,12 @@ public class ProjectServiceImpl implements ProjectService {
 
     private final UserRepository userRepository ;
 
-    public ProjectServiceImpl(ProjectRepository projectRepository, UserRepository userRepository) {
+    private final CahierDeTestGlobalRepository cahierDeTestGlobalRepository;
+
+    public ProjectServiceImpl(ProjectRepository projectRepository, UserRepository userRepository, CahierDeTestGlobalRepository cahierDeTestGlobalRepository) {
         this.projectRepository = projectRepository;
         this.userRepository = userRepository;
+        this.cahierDeTestGlobalRepository = cahierDeTestGlobalRepository;
     }
 
     @Override
@@ -40,25 +45,55 @@ public class ProjectServiceImpl implements ProjectService {
         return new ResponseEntity<>(newProject  , HttpStatus.CREATED);
     }
 
+//    @Override
+//    public List<Projet> getAllProjectsByUserId(Long userId) {
+//        return projectRepository.findByUtilisateurs_Id(userId);
+//    }
+
     @Override
     public List<Projet> getAllProjectsByUserId(Long userId) {
-        return projectRepository.findByUtilisateurs_Id(userId);
+        return projectRepository.findProjectsByUserId(userId);
     }
-
-    public Projet createAndAssignProject(String projectName, String projectDescription, Long userId) {
+    @Transactional
+    public Projet createAndAssignProject(String projectName, String projectDescription, Long userId, USER_ROLE_PROJECTS role) {
         UserModel user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
 
-        Projet newProject = new Projet();
-        newProject.setNom(projectName);
+
+        Projet newProject = new Projet(projectName);
         newProject.setDescription(projectDescription);
 
-        // Associate project with user
-        user.getProjets().add(newProject);
-        newProject.getUtilisateurs().add(user);
+        ProjectAssignment assignment = new ProjectAssignment();
+        assignment.setUser(user);
+        assignment.setProject(newProject);
+        assignment.setRole(role); // Assign a default role or use a parameter
 
-        // Save the project, which also updates the user due to CascadeType.ALL in the mapping
-        return projectRepository.save(newProject);
+        user.getProjectAssignments().add(assignment);
+        newProject.getProjectAssignments().add(assignment);
+
+        projectRepository.saveAndFlush(newProject);  // Saving project cascades to save assignments
+        return newProject;
     }
+
+    @Override
+    public Optional<ProjectDTO> getProjectWithCahier(Long id) {
+        return projectRepository.findById(id).map(projet -> {
+            ProjectDTO dto = new ProjectDTO();
+            dto.setProjectId(projet.getId());
+            dto.setProjectName(projet.getNom());
+            dto.setDescription(projet.getDescription());
+            if (projet.getCahierDeTestGlobal() != null) {
+                dto.setCahierDeTestGlobalId(projet.getCahierDeTestGlobal().getId());
+                dto.setCahierDeTestGlobalNom(projet.getCahierDeTestGlobal().getNom());
+            }
+            return dto;
+        });
+    }
+
+    @Override
+    public CahierDeTestGlobal findCahierByProjectId(Long projectId) {
+        return cahierDeTestGlobalRepository.findByProjectId(projectId);
+    }
+
 
 }

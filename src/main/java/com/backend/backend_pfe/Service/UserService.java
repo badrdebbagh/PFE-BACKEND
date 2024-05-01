@@ -1,6 +1,7 @@
 package com.backend.backend_pfe.Service;
 
 
+import com.backend.backend_pfe.model.USER_ROLE_PROJECTS;
 import com.backend.backend_pfe.model.UserModel;
 import org.springframework.http.ResponseEntity;
 
@@ -18,7 +19,9 @@ public interface UserService {
 
     ResponseEntity<Void> deleteUser(Long id);
 
-    UserModel assignProjectToEmployee(Long userId, Long projectId);
+//    UserModel assignProjectToEmployee(Long userId, Long projectId);
+
+    UserModel assignProjectToEmployee(Long userId, Long projectId, USER_ROLE_PROJECTS role);
 
     ResponseEntity<Void> suspendUser(Long id);
 

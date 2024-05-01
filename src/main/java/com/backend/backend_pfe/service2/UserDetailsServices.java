@@ -1,7 +1,8 @@
 package com.backend.backend_pfe.service2;
-import com.backend.backend_pfe.model.Projet;
-import com.backend.backend_pfe.model.USER_ROLE;
-import com.backend.backend_pfe.model.UserModel;
+import com.backend.backend_pfe.dto.ProjectDTO;
+import com.backend.backend_pfe.dto.ProjectRoleDTO;
+import com.backend.backend_pfe.model.*;
+import com.backend.backend_pfe.repository.CahierDeTestGlobalRepository;
 import com.backend.backend_pfe.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -18,11 +19,19 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class UserDetailsServices implements UserDetailsService {
 @Autowired
     private UserRepository userRepository;
+@Autowired
+    private CahierDeTestGlobalRepository cahierDeTestGlobalRepository;
+
+    public UserDetailsServices(CahierDeTestGlobalRepository cahierDeTestGlobalRepositoryl) {
+        this.cahierDeTestGlobalRepository = cahierDeTestGlobalRepository;
+    }
+
     @Override
     public  UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         System.out.println("Username received: " + username);
@@ -41,20 +50,36 @@ public class UserDetailsServices implements UserDetailsService {
         authorities.add(new SimpleGrantedAuthority(role.toString()));
 
 
-        return new User(user.getEmail() , user.getPassword() , authorities);
+        return user;
     }
 
-    public Set<Projet> getCurrentUserProjects() {
+    public Set<ProjectDTO> getCurrentUserProjects() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName(); // Assuming the username is the email used in UserModel
-        return getProjectsForUser(username);
+        String email = authentication.getName(); // Assuming the username is the email used in UserModel
+        return getProjectsForUser(email);
     }
 
-    private Set<Projet> getProjectsForUser(String email) {
-        UserModel user = userRepository.findByEmailWithProjects(email);
+
+    private Set<ProjectDTO> getProjectsForUser(String email) {
+        UserModel user = userRepository.findByEmailWithProjectAssignments(email);
         if (user == null) {
             throw new RuntimeException("User not found");
         }
-        return user.getProjets();
+        return user.getProjectAssignments().stream()
+                .map(assignment -> {
+                    ProjectDTO projectDTO = new ProjectDTO();
+                    projectDTO.setProjectId(assignment.getProject().getId());
+                    projectDTO.setProjectName(assignment.getProject().getNom());
+                    projectDTO.setDescription(assignment.getProject().getDescription());
+                    projectDTO.setUserRole((assignment.getRole() != null ? assignment.getRole().name() : "No Role Assigned"));
+                    // Fetch and set CahierDeTestGlobal ID
+                    CahierDeTestGlobal cahier = cahierDeTestGlobalRepository.findByProjectId(assignment.getProject().getId());
+                    if (cahier != null) {
+                        projectDTO.setCahierDeTestGlobalNom(cahier.getNom());
+                    }
+                    return projectDTO;
+                })
+                .collect(Collectors.toSet());
     }
+
 }

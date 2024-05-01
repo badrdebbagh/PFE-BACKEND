@@ -3,6 +3,9 @@ package com.backend.backend_pfe.controller;
 import com.backend.backend_pfe.Service.ProjectService;
 
 import com.backend.backend_pfe.Service.UserService;
+import com.backend.backend_pfe.dto.ProjectDTO;
+import com.backend.backend_pfe.dto.ProjectRoleDTO;
+import com.backend.backend_pfe.model.CahierDeTestGlobal;
 import com.backend.backend_pfe.model.Projet;
 import com.backend.backend_pfe.model.UserModel;
 import com.backend.backend_pfe.request.ProjetRequest;
@@ -15,6 +18,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @RestController
@@ -42,10 +46,10 @@ private final UserService userService;
     }
 
 
-    @GetMapping("userProjects")
-    public ResponseEntity<Set<Projet>> getMyProjects() {
-        Set<Projet> projets = userDetailsServices.getCurrentUserProjects();
-        return ResponseEntity.ok(projets);
+    @GetMapping("/userProjects")
+    public ResponseEntity<Set<ProjectDTO>> getMyProjects() {
+        Set<ProjectDTO> projectRoleDetails = userDetailsServices.getCurrentUserProjects(); // Assume this now returns ProjectRoleDTO
+        return ResponseEntity.ok(projectRoleDetails);
     }
 
     @PostMapping("/createProjectUser")
@@ -54,11 +58,30 @@ private final UserService userService;
             Projet project = projectService.createAndAssignProject(
                     projetRequest.getNom(),
                     projetRequest.getDescription(),
-                    projetRequest.getUserId());
+                    projetRequest.getUserId(),
+                    projetRequest.getRole());
             return ResponseEntity.ok(project);
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
     }
+
+    @GetMapping("/project/{id}")
+    public ResponseEntity<ProjectDTO> getProjectById(@PathVariable Long id) {
+        Optional<ProjectDTO> projectDto = projectService.getProjectWithCahier(id);
+        return projectDto.map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/projects/{projectId}/cahier")
+    public ResponseEntity<CahierDeTestGlobal> getCahierDeTestByProjectId(@PathVariable Long projectId) {
+        CahierDeTestGlobal cahier = projectService.findCahierByProjectId(projectId);
+        if (cahier != null) {
+            return ResponseEntity.ok(cahier);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
 
 }

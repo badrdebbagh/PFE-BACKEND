@@ -1,11 +1,15 @@
 package com.backend.backend_pfe.Service;
 
 
+import com.backend.backend_pfe.dto.ProjectDTO;
+import com.backend.backend_pfe.model.CahierDeTestGlobal;
 import com.backend.backend_pfe.model.Projet;
+import com.backend.backend_pfe.model.USER_ROLE_PROJECTS;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public interface ProjectService {
@@ -15,5 +19,10 @@ public interface ProjectService {
 
     List<Projet> getAllProjectsByUserId(Long id);
 
-    Projet createAndAssignProject(String name, String description, Long userId);
+
+    Projet createAndAssignProject(String projectName, String projectDescription, Long userId, USER_ROLE_PROJECTS role);
+
+    Optional<ProjectDTO> getProjectWithCahier(Long id);
+
+    CahierDeTestGlobal findCahierByProjectId(Long projectId);
 }

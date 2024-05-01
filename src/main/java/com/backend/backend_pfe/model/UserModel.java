@@ -1,5 +1,6 @@
 package com.backend.backend_pfe.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
@@ -30,25 +31,28 @@ public class UserModel implements UserDetails{
     private String password;
 
     @Enumerated
-    private USER_ROLE role = USER_ROLE.USER ;
+    private USER_ROLE role = USER_ROLE.ADMIN ;
 
+    @Enumerated
+    private USER_ROLE_PROJECTS roleProjects = USER_ROLE_PROJECTS.USER_ROLE_1;
 
+    @JsonIgnore
+@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 
-    @ManyToMany(fetch = FetchType.LAZY , cascade = CascadeType.ALL)
-    @JoinTable(
-            name = "projet_utilisateur", // Nom de la table de jointure
-            joinColumns = @JoinColumn(name = "utilisateur_id" ), // Clé étrangère pour UserModel
-            inverseJoinColumns = @JoinColumn(name = "projet_id" ) // Clé étrangère pour Projet
-    )
-    private Set<Projet> projets = new HashSet<>();
+private Set<ProjectAssignment> projectAssignments = new HashSet<>();
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Set.of(new SimpleGrantedAuthority("ROLE_" + role.name()));
+        return Set.of(new SimpleGrantedAuthority( role.name()));
     }
 
     @Override
     public String getPassword() {
         return password;
+    }
+
+
+    public String getFullName() {
+        return firstName + " " + lastName;
     }
 
     @Override
@@ -78,5 +82,17 @@ public class UserModel implements UserDetails{
 
     @Column(name = "is_suspended")
     private boolean isSuspended = false;
+
+
+
+
+//    @ManyToMany(fetch = FetchType.LAZY , cascade = CascadeType.ALL)
+//    @JoinTable(
+//            name = "projet_utilisateur", // Nom de la table de jointure
+//            joinColumns = @JoinColumn(name = "utilisateur_id" ), // Clé étrangère pour UserModel
+//            inverseJoinColumns = @JoinColumn(name = "projet_id" ) // Clé étrangère pour Projet
+//    )
+//    private Set<Projet> projets = new HashSet<>();
+
 
 }
