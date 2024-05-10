@@ -2,6 +2,8 @@ package com.backend.backend_pfe.controller;
 
 import com.backend.backend_pfe.Service.CahierDeTestGlobalService;
 
+import com.backend.backend_pfe.dto.CahierDeTestDTO;
+import com.backend.backend_pfe.dto.CahierTestGlobalDTO;
 import com.backend.backend_pfe.model.CahierDeTest;
 import com.backend.backend_pfe.model.CahierDeTestGlobal;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,8 +18,8 @@ public class CahierDeTestGlobalController {
     private CahierDeTestGlobalService cahierDeTestGlobalService;
 
     @PostMapping("/create/{projectId}") // creer un a cahier de test global en le liant avec son projet
-    public ResponseEntity<CahierDeTestGlobal> createGlobalCahierDeTest(@PathVariable Long projectId){
-         CahierDeTestGlobal cahierDeTestGlobal = cahierDeTestGlobalService.createGlobalCahierDeTest(projectId);
+    public ResponseEntity<CahierDeTestGlobal> createGlobalCahierDeTest(@PathVariable Long projectId , @RequestBody CahierTestGlobalDTO cahierTestGlobalDTO){
+         CahierDeTestGlobal cahierDeTestGlobal = cahierDeTestGlobalService.createGlobalCahierDeTest(projectId , cahierTestGlobalDTO.getNom());
          return ResponseEntity.ok(cahierDeTestGlobal);
     }
 

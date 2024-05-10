@@ -4,6 +4,7 @@ package com.backend.backend_pfe.Service;
 import com.backend.backend_pfe.dto.ProjectDTO;
 import com.backend.backend_pfe.model.*;
 import com.backend.backend_pfe.repository.CahierDeTestGlobalRepository;
+import com.backend.backend_pfe.repository.DomaineRepository;
 import com.backend.backend_pfe.repository.ProjectRepository;
 import com.backend.backend_pfe.repository.UserRepository;
 import org.springframework.http.HttpStatus;
@@ -23,10 +24,13 @@ public class ProjectServiceImpl implements ProjectService {
 
     private final CahierDeTestGlobalRepository cahierDeTestGlobalRepository;
 
-    public ProjectServiceImpl(ProjectRepository projectRepository, UserRepository userRepository, CahierDeTestGlobalRepository cahierDeTestGlobalRepository) {
+    private final DomaineRepository domaineRepository;
+
+    public ProjectServiceImpl(ProjectRepository projectRepository, UserRepository userRepository, CahierDeTestGlobalRepository cahierDeTestGlobalRepository, DomaineRepository domaineRepository) {
         this.projectRepository = projectRepository;
         this.userRepository = userRepository;
         this.cahierDeTestGlobalRepository = cahierDeTestGlobalRepository;
+        this.domaineRepository = domaineRepository;
     }
 
     @Override
@@ -59,19 +63,21 @@ public class ProjectServiceImpl implements ProjectService {
         UserModel user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
 
-
         Projet newProject = new Projet(projectName);
         newProject.setDescription(projectDescription);
+
+        // Assign the domaines to the project
+
 
         ProjectAssignment assignment = new ProjectAssignment();
         assignment.setUser(user);
         assignment.setProject(newProject);
-        assignment.setRole(role); // Assign a default role or use a parameter
+        assignment.setRole(role);
 
         user.getProjectAssignments().add(assignment);
         newProject.getProjectAssignments().add(assignment);
 
-        projectRepository.saveAndFlush(newProject);  // Saving project cascades to save assignments
+        projectRepository.saveAndFlush(newProject);
         return newProject;
     }
 
@@ -93,6 +99,18 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public CahierDeTestGlobal findCahierByProjectId(Long projectId) {
         return cahierDeTestGlobalRepository.findByProjectId(projectId);
+    }
+
+    @Override
+    public Projet assignDomaineToProject(Long projectId, Long domaineId) {
+        Projet projet = projectRepository.findById(projectId)
+                .orElseThrow(() -> new RuntimeException("Project not found"));
+
+        Domaine domaine = domaineRepository.findById(domaineId)
+                .orElseThrow(() -> new RuntimeException("Domain not found"));
+
+        projet.getDomaines().add(domaine);
+        return projectRepository.save(projet);
     }
 
 

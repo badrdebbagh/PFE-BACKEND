@@ -106,4 +106,15 @@ return new ResponseEntity<>(newUser  , HttpStatus.CREATED);
         return ResponseEntity.ok().build();
     }
 
+    @Override
+    public ResponseEntity<Void> activateUser(Long id) {
+        UserModel user = userRepository.findById(id).orElse(null);
+        if (user == null) {
+            return ResponseEntity.notFound().build();
+        }
+        user.setSuspended(false);
+        userRepository.save(user);
+        return ResponseEntity.ok().build();
+    }
+
 }

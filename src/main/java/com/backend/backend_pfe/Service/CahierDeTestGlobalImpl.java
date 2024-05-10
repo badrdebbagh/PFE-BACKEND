@@ -22,10 +22,11 @@ public class CahierDeTestGlobalImpl implements CahierDeTestGlobalService{
 
 
     @Override
-    public CahierDeTestGlobal createGlobalCahierDeTest(Long projectId) {
+    public CahierDeTestGlobal createGlobalCahierDeTest(Long projectId  , String nom) {
         return projectRepository.findById(projectId).map(project -> {
             CahierDeTestGlobal cahierDeTestGlobal = new CahierDeTestGlobal();
             cahierDeTestGlobal.setProject(project);
+            cahierDeTestGlobal.setNom(nom);
             return cahierDeTestGlobalRepository.save(cahierDeTestGlobal);
         }).orElseThrow(() -> new RuntimeException("Project not found"));
     }

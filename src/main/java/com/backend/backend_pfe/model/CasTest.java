@@ -16,12 +16,16 @@ public class CasTest {
     private Long id;
 
     private String titre;
-    private String etapes;
+    private String description;
 
     private String resultatAttendu;
 
     @ManyToOne
     @JoinColumn(name = "domaine_id", nullable = false)
     private Domaine domaine;
+
+    @ManyToOne
+    @JoinColumn(name = "fonctionnalite_id", nullable = false)
+    private Fonctionnalité fonctionnalite;
 
 }

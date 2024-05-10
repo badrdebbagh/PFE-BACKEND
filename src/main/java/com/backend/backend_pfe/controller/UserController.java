@@ -60,6 +60,11 @@ public class UserController {
         return userService.suspendUser(id);
     }
 
+    @PutMapping("/activateUser/{id}")
+    public ResponseEntity<Void> activateUser(@PathVariable Long id){
+        return userService.activateUser(id);
+    }
+
 
 
 }

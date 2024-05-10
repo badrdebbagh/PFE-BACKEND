@@ -26,5 +26,5 @@ public interface UserService {
     ResponseEntity<Void> suspendUser(Long id);
 
 
-
+    ResponseEntity<Void> activateUser(Long id);
 }

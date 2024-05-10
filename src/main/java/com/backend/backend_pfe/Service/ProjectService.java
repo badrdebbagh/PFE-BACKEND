@@ -20,9 +20,11 @@ public interface ProjectService {
     List<Projet> getAllProjectsByUserId(Long id);
 
 
-    Projet createAndAssignProject(String projectName, String projectDescription, Long userId, USER_ROLE_PROJECTS role);
+    Projet createAndAssignProject(String projectName, String projectDescription, Long userId, USER_ROLE_PROJECTS role );
 
     Optional<ProjectDTO> getProjectWithCahier(Long id);
 
     CahierDeTestGlobal findCahierByProjectId(Long projectId);
+
+    Projet assignDomaineToProject(Long projectId, Long domaineId);
 }

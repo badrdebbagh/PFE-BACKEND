@@ -32,5 +32,11 @@ public class CahierDeTest {
     @ManyToOne( fetch = FetchType.LAZY)
    @JoinColumn(name = "sous_domaine_id")
     private SousDomaine sousDomaine;
+ @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "project_id")
+    private Projet projet;
+
+
 
 }

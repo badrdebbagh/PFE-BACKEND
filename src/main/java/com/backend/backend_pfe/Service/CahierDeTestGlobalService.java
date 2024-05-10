@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 
 public interface CahierDeTestGlobalService {
 
-    CahierDeTestGlobal createGlobalCahierDeTest(Long projectId);
+    CahierDeTestGlobal createGlobalCahierDeTest(Long projectId , String nom);
 
     CahierDeTestGlobal findCahierDeTestGlobal(Long id);
 }

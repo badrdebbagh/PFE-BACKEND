@@ -34,6 +34,14 @@ public class Projet {
     @OneToOne(mappedBy = "project", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private CahierDeTestGlobal cahierDeTestGlobal;
 
+    @ManyToMany
+    @JoinTable(
+            name = "projet_domaine",
+            joinColumns = @JoinColumn(name = "projet_id"),
+            inverseJoinColumns = @JoinColumn(name = "domaine_id")
+    )
+    private Set<Domaine> domaines = new HashSet<>();
+
     @Transient
     @JsonProperty("chefDeProjet") // Include this property in JSON serialization
     public String getChefDeProjet() {

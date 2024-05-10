@@ -23,4 +23,5 @@ public class Domaine {
     @JsonIgnore
     @OneToMany(mappedBy = "domaine", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<CahierDeTest> cahiers = new HashSet<>();
+
 }

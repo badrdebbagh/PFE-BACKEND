@@ -36,7 +36,7 @@ private final UserService userService;
         this.projectService = projectService;
         this.userService = userService;
     }
-@GetMapping("allProjects")
+    @GetMapping("allProjects")
     public ResponseEntity<List<Projet>> getAllProjects(){
         return projectService.getAllProjects();
     }
@@ -52,18 +52,16 @@ private final UserService userService;
         return ResponseEntity.ok(projectRoleDetails);
     }
 
-    @PostMapping("/createProjectUser")
-    public ResponseEntity<Projet> createUserWithProject(@RequestBody ProjetRequest projetRequest) {
-        try {
-            Projet project = projectService.createAndAssignProject(
-                    projetRequest.getNom(),
-                    projetRequest.getDescription(),
-                    projetRequest.getUserId(),
-                    projetRequest.getRole());
-            return ResponseEntity.ok(project);
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
-        }
+    @PostMapping("/createProjectWithDomaine")
+    public ResponseEntity<Projet> createProjectWithDomaines(@RequestBody ProjetRequest projetRequest) {
+        Projet createdProject = projectService.createAndAssignProject(
+                projetRequest.getProjectName(),
+                projetRequest.getDescription(),
+                projetRequest.getUserId(),
+                projetRequest.getRole()
+
+        );
+        return new ResponseEntity<>(createdProject, HttpStatus.CREATED);
     }
 
     @GetMapping("/project/{id}")
@@ -81,6 +79,13 @@ private final UserService userService;
         } else {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    @PostMapping("/{projectId}/assignDomaine")
+    public ResponseEntity<Projet> assignDomaineToProject(
+            @PathVariable Long projectId, @RequestParam Long domaineId) {
+        Projet updatedProjet = projectService.assignDomaineToProject(projectId, domaineId);
+        return ResponseEntity.ok(updatedProjet);
     }
 
 
