@@ -2,10 +2,13 @@ package com.backend.backend_pfe.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
 import jakarta.persistence.*;
 import lombok.*;
 
+
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -34,6 +37,7 @@ public class Projet {
     @OneToOne(mappedBy = "project", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private CahierDeTestGlobal cahierDeTestGlobal;
 
+
     @ManyToMany
     @JoinTable(
             name = "projet_domaine",
@@ -41,6 +45,10 @@ public class Projet {
             inverseJoinColumns = @JoinColumn(name = "domaine_id")
     )
     private Set<Domaine> domaines = new HashSet<>();
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "projet")
+    private List<Fonctionnalité> fonctionnalités;
 
     @Transient
     @JsonProperty("chefDeProjet") // Include this property in JSON serialization

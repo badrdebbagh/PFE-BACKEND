@@ -1,6 +1,8 @@
 package com.backend.backend_pfe.controller;
 
 import com.backend.backend_pfe.Service.UserService;
+import com.backend.backend_pfe.dto.UserProjectDTO;
+import com.backend.backend_pfe.model.CasTest;
 import com.backend.backend_pfe.model.USER_ROLE_PROJECTS;
 import com.backend.backend_pfe.model.UserModel;
 import com.backend.backend_pfe.repository.UserRepository;
@@ -47,7 +49,7 @@ public class UserController {
     public ResponseEntity<?> assignProjectToEmployee(@PathVariable Long userId, @PathVariable Long projectId, @RequestBody USER_ROLE_PROJECTS role) {
         try {
 
-            System.out.println("Attempting to assign role: " + role + " to userId: " + userId + " for projectId: " + projectId);
+
             UserModel userModel = userService.assignProjectToEmployee(userId, projectId, role);
             return ResponseEntity.ok(userModel);
         } catch (RuntimeException ex) {
@@ -64,6 +66,38 @@ public class UserController {
     public ResponseEntity<Void> activateUser(@PathVariable Long id){
         return userService.activateUser(id);
     }
+
+
+    @PostMapping("/{userId}/domaines/{domaineId}")
+    public ResponseEntity<UserModel> assignDomaineToUser(@PathVariable Long userId, @PathVariable Long domaineId) {
+        UserModel updatedUser = userService.assignDomaineToUser(userId, domaineId);
+        return ResponseEntity.ok(updatedUser);
+    }
+
+    @PostMapping("/{userId}/domaines/{domaineId}/projects/{projectId}")
+    public ResponseEntity<UserModel> assignUserToDomaineAndProject(@PathVariable Long userId, @PathVariable Long domaineId, @PathVariable Long projectId) {
+        UserModel updatedUser = userService.assignUserToDomaineAndProject(userId, domaineId, projectId);
+        return ResponseEntity.ok(updatedUser);
+    }
+
+//    @GetMapping("/{userId}/testcases")
+//    public ResponseEntity<List<CasTest>> getTestCasesForUser(@PathVariable Long userId) {
+//        List<CasTest> testCases = userService.getTestCasesForUser(userId);
+//        return ResponseEntity.ok(testCases);
+//    }
+
+    @GetMapping("/user/{userId}/projects/{projectId}/testcases")
+    public ResponseEntity<List<CasTest>> getTestCasesForUserAndProject(@PathVariable Long userId, @PathVariable Long projectId) {
+        List<CasTest> testCases = userService.getTestCasesForUserAndProject(userId, projectId);
+        return ResponseEntity.ok(testCases);
+    }
+
+    @GetMapping("/user/{userId}/projects")
+    public ResponseEntity<UserProjectDTO> getUserProjectsData(@PathVariable Long userId) {
+        UserProjectDTO data = userService.getUserProjectsData(userId);
+        return ResponseEntity.ok(data);
+    }
+
 
 
 

@@ -24,4 +24,8 @@ public class Domaine {
     @OneToMany(mappedBy = "domaine", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<CahierDeTest> cahiers = new HashSet<>();
 
+
+    @JsonIgnore
+    @ManyToMany(mappedBy = "domaines")
+    private Set<UserModel> users = new HashSet<>();
 }

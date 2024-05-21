@@ -36,8 +36,8 @@ private final UserService userService;
         this.projectService = projectService;
         this.userService = userService;
     }
-    @GetMapping("allProjects")
-    public ResponseEntity<List<Projet>> getAllProjects(){
+    @GetMapping("/allProjects")
+    public ResponseEntity<List<Projet>> getAllProjects() {
         return projectService.getAllProjects();
     }
     @PostMapping("createProject")
@@ -52,8 +52,15 @@ private final UserService userService;
         return ResponseEntity.ok(projectRoleDetails);
     }
 
+    @GetMapping("/userProjects2")
+    public ResponseEntity<Set<ProjectDTO>> getProjects(){
+        Set<ProjectDTO> userProjects = userDetailsServices.getUserProjects();
+        return ResponseEntity.ok(userProjects);
+    }
+
     @PostMapping("/createProjectWithDomaine")
     public ResponseEntity<Projet> createProjectWithDomaines(@RequestBody ProjetRequest projetRequest) {
+
         Projet createdProject = projectService.createAndAssignProject(
                 projetRequest.getProjectName(),
                 projetRequest.getDescription(),
@@ -84,9 +91,11 @@ private final UserService userService;
     @PostMapping("/{projectId}/assignDomaine")
     public ResponseEntity<Projet> assignDomaineToProject(
             @PathVariable Long projectId, @RequestParam Long domaineId) {
+
         Projet updatedProjet = projectService.assignDomaineToProject(projectId, domaineId);
         return ResponseEntity.ok(updatedProjet);
     }
+
 
 
 }

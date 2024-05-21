@@ -1,4 +1,5 @@
 package com.backend.backend_pfe.service2;
+import com.backend.backend_pfe.dto.DomaineDTO;
 import com.backend.backend_pfe.dto.ProjectDTO;
 import com.backend.backend_pfe.dto.ProjectRoleDTO;
 import com.backend.backend_pfe.model.*;
@@ -57,9 +58,10 @@ public class UserDetailsServices implements UserDetailsService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName(); // Assuming the username is the email used in UserModel
         return getProjectsForUser(email);
+
+
     }
-
-
+// get projects of user with domaines assigned
     private Set<ProjectDTO> getProjectsForUser(String email) {
         UserModel user = userRepository.findByEmailWithProjectAssignments(email);
         if (user == null) {
@@ -71,15 +73,74 @@ public class UserDetailsServices implements UserDetailsService {
                     projectDTO.setProjectId(assignment.getProject().getId());
                     projectDTO.setProjectName(assignment.getProject().getNom());
                     projectDTO.setDescription(assignment.getProject().getDescription());
-                    projectDTO.setUserRole((assignment.getRole() != null ? assignment.getRole().name() : "No Role Assigned"));
-                    // Fetch and set CahierDeTestGlobal ID
+
+
                     CahierDeTestGlobal cahier = cahierDeTestGlobalRepository.findByProjectId(assignment.getProject().getId());
                     if (cahier != null) {
+                        projectDTO.setCahierDeTestGlobalId(cahier.getId());
                         projectDTO.setCahierDeTestGlobalNom(cahier.getNom());
                     }
+
+                    // Set linked domains
+                    Set<DomaineDTO> domaines = assignment.getProject().getDomaines().stream()
+                            .filter(domaine -> domaine.getUsers().contains(user))
+                            .map(domaine -> {
+                                DomaineDTO domaineDTO = new DomaineDTO();
+                                domaineDTO.setId(domaine.getId());
+                                domaineDTO.setNom(domaine.getNom());
+                                return domaineDTO;
+                            })
+                            .collect(Collectors.toSet());
+                    projectDTO.setDomaines(domaines);
+
                     return projectDTO;
                 })
                 .collect(Collectors.toSet());
     }
+
+    public Set<ProjectDTO> getUserProjects() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName(); // Assuming the username is the email used in UserModel
+        return getProjectsWithUser(email);
+    }
+
+
+    //get projects for logged user
+
+    public Set<ProjectDTO> getProjectsWithUser(String email) {
+        UserModel user = userRepository.findByEmailWithProjectAssignments(email);
+        if (user == null) {
+            throw new RuntimeException("User not found");
+        }
+        return user.getProjectAssignments().stream()
+                .map(assignment -> {
+                    ProjectDTO projectDTO = new ProjectDTO();
+                    projectDTO.setProjectId(assignment.getProject().getId());
+                    projectDTO.setProjectName(assignment.getProject().getNom());
+                    projectDTO.setDescription(assignment.getProject().getDescription());
+
+                    // Fetch and set CahierDeTestGlobal ID
+                    CahierDeTestGlobal cahier = cahierDeTestGlobalRepository.findByProjectId(assignment.getProject().getId());
+                    if (cahier != null) {
+                        projectDTO.setCahierDeTestGlobalId(cahier.getId());
+                        projectDTO.setCahierDeTestGlobalNom(cahier.getNom());
+                    }
+
+                    // Set linked domains
+                    Set<DomaineDTO> domaines = assignment.getProject().getDomaines().stream()
+                            .map(domaine -> {
+                                DomaineDTO domaineDTO = new DomaineDTO();
+                                domaineDTO.setId(domaine.getId());
+                                domaineDTO.setNom(domaine.getNom());
+                                return domaineDTO;
+                            })
+                            .collect(Collectors.toSet());
+                    projectDTO.setDomaines(domaines);
+
+                    return projectDTO;
+                })
+                .collect(Collectors.toSet());
+    }
+
 
 }

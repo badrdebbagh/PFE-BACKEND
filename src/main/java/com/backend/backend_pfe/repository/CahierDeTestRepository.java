@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Repository
 public interface CahierDeTestRepository extends JpaRepository<CahierDeTest , Long > {
@@ -21,4 +22,9 @@ public interface CahierDeTestRepository extends JpaRepository<CahierDeTest , Lon
 
     @Query("SELECT c FROM CahierDeTest c WHERE c.projet.id = :projectId AND c.domaine.id = :domaineId")
     List<CahierDeTest> findByProjectIdAndDomaineId(@Param("projectId") Long projectId, @Param("domaineId") Long domaineId);
+
+    Set<CahierDeTest> findByDomaine_Id(Long domaineId);
+
+    @Query("SELECT cd FROM CahierDeTest cd WHERE cd.domaine.id IN :domainIds AND cd.projet.id IN :projectIds")
+    List<CahierDeTest> findCahierDeTestsByDomainIdsAndProjectIds(@Param("domainIds") List<Long> domainIds, @Param("projectIds") List<Long> projectIds);
 }

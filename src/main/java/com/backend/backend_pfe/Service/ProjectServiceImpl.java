@@ -34,13 +34,14 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public ResponseEntity<List<Projet>>getAllProjects() {
+    public ResponseEntity<List<Projet>> getAllProjects() {
         try {
-            return new ResponseEntity<>(projectRepository.findAll(), HttpStatus.OK) ;
-        }catch(Exception e ){
+            List<Projet> projects = projectRepository.findAllWithDomaines();
+            return new ResponseEntity<>(projects, HttpStatus.OK);
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        return new ResponseEntity<>(new ArrayList<>() , HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(new ArrayList<>(), HttpStatus.BAD_REQUEST);
     }
 
     @Override
@@ -67,7 +68,8 @@ public class ProjectServiceImpl implements ProjectService {
         newProject.setDescription(projectDescription);
 
         // Assign the domaines to the project
-
+//        List<Domaine> domaines = domaineRepository.findAllById(domaineIds);
+//        newProject.setDomaines(new HashSet<>(domaines));
 
         ProjectAssignment assignment = new ProjectAssignment();
         assignment.setUser(user);

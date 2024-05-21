@@ -18,4 +18,7 @@ public interface ProjectRepository extends JpaRepository<Projet , Long> {
 //    List<Projet> findByUtilisateurs_Id(Long userId);
 @Query("select pa.project from ProjectAssignment pa where pa.user.id = :userId")
 List<Projet> findProjectsByUserId(Long userId);
+
+    @Query("SELECT p FROM Projet p LEFT JOIN FETCH p.domaines")
+    List<Projet> findAllWithDomaines();
 }

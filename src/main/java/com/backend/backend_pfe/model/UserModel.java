@@ -38,8 +38,19 @@ public class UserModel implements UserDetails{
 
     @JsonIgnore
 @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-
 private Set<ProjectAssignment> projectAssignments = new HashSet<>();
+
+    @JsonIgnore
+    @ManyToMany
+    @JoinTable(
+            name = "user_domaine",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "domaine_id")
+    )
+    private Set<Domaine> domaines = new HashSet<>();
+
+    @OneToMany(mappedBy = "userModel", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<CasTest> casTests;
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Set.of(new SimpleGrantedAuthority( role.name()));
@@ -84,15 +95,6 @@ private Set<ProjectAssignment> projectAssignments = new HashSet<>();
     private boolean isSuspended = false;
 
 
-
-
-//    @ManyToMany(fetch = FetchType.LAZY , cascade = CascadeType.ALL)
-//    @JoinTable(
-//            name = "projet_utilisateur", // Nom de la table de jointure
-//            joinColumns = @JoinColumn(name = "utilisateur_id" ), // Clé étrangère pour UserModel
-//            inverseJoinColumns = @JoinColumn(name = "projet_id" ) // Clé étrangère pour Projet
-//    )
-//    private Set<Projet> projets = new HashSet<>();
 
 
 }

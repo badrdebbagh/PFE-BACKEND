@@ -33,7 +33,7 @@ public class CahierDeTestController {
 //
 //    }
 
-    @PostMapping("/createSousCahierDeTest") // creating cahier de test with domain , project and
+    @PostMapping("/createSousCahierDeTest")
     public ResponseEntity<CahierDeTest> createSubCahierDeTest(@RequestBody CahierDeTestDTO cahierDeTestDTO) {
 
         CahierDeTest newCahierDeTest = cahierDeTestService.createSubCahierDeTest(cahierDeTestDTO);

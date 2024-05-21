@@ -1,12 +1,15 @@
 package com.backend.backend_pfe.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
 
 @Entity
 @Getter
@@ -23,7 +26,7 @@ public class CahierDeTest {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cahier_de_test_global_id")
     private CahierDeTestGlobal cahierDeTestGlobal;
-    @JsonIgnore
+    @JsonProperty("domaine")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "domaine_id")
     private Domaine domaine;
@@ -36,6 +39,9 @@ public class CahierDeTest {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "project_id")
     private Projet projet;
+
+    @OneToMany(mappedBy = "cahierDeTest", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Fonctionnalité> fonctionnalites;
 
 
 

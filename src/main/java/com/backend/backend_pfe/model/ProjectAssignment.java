@@ -28,4 +28,10 @@ public class ProjectAssignment {
 
     @Enumerated(EnumType.STRING)
     private USER_ROLE_PROJECTS role;
+
+    public ProjectAssignment(UserModel user, Projet project) {
+
+        this.user = user;
+        this.project = project;
+    }
 }
