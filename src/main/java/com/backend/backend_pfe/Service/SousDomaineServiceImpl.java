@@ -19,4 +19,9 @@ public class SousDomaineServiceImpl implements SousDomaineService {
     public List<SousDomaine> getAllDomaines() {
         return sousDomaineRepository.findAll();
     }
+
+    @Override
+    public SousDomaine createSousDomaine(SousDomaine sousDomaine) {
+        return sousDomaineRepository.save(sousDomaine);
+    }
 }

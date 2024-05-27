@@ -13,8 +13,8 @@ import java.util.Optional;
 
 @Service
 public interface ProjectService {
-    ResponseEntity<List<Projet>> getAllProjects();
 
+    ResponseEntity<List<Projet>> getAllProjects();
     ResponseEntity<Projet> createProject(Projet projet);
 
     List<Projet> getAllProjectsByUserId(Long id);
@@ -27,4 +27,6 @@ public interface ProjectService {
     CahierDeTestGlobal findCahierByProjectId(Long projectId);
 
     Projet assignDomaineToProject(Long projectId, Long domaineId);
+
+    Projet updateProjectStatus(Long projectId);
 }

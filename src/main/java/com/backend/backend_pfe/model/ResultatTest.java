@@ -21,6 +21,8 @@ public class ResultatTest {
     private String commentaires;
     private LocalDate dateExecution;
 
+    private String comment;
+
     @ManyToOne
     @JoinColumn(name = "cas_test_id", nullable = false)
     private CasTest casTest;

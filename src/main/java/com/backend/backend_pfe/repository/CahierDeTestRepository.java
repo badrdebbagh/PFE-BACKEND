@@ -1,6 +1,8 @@
 package com.backend.backend_pfe.repository;
 
 import com.backend.backend_pfe.model.CahierDeTest;
+import com.backend.backend_pfe.model.Domaine;
+import com.backend.backend_pfe.model.Projet;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -27,4 +29,8 @@ public interface CahierDeTestRepository extends JpaRepository<CahierDeTest , Lon
 
     @Query("SELECT cd FROM CahierDeTest cd WHERE cd.domaine.id IN :domainIds AND cd.projet.id IN :projectIds")
     List<CahierDeTest> findCahierDeTestsByDomainIdsAndProjectIds(@Param("domainIds") List<Long> domainIds, @Param("projectIds") List<Long> projectIds);
+
+    Optional<CahierDeTest> findByName(String name);
+
+    Optional<CahierDeTest> findByNameAndDomaineAndProjet(String name, Domaine domaine, Projet projet);
 }

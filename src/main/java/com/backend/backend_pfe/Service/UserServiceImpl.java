@@ -335,8 +335,10 @@ return new ResponseEntity<>(newUser  , HttpStatus.CREATED);
         return userProjectDTO;
     }
 
-
-
+    @Override
+    public long countTotalUsers() {
+        return userRepository.count();
+    }
 
 
 }

@@ -96,6 +96,12 @@ private final UserService userService;
         return ResponseEntity.ok(updatedProjet);
     }
 
+    @GetMapping("/{id}/status")
+    public ResponseEntity<Projet> getProjectStatus(@PathVariable Long id) {
+        Projet projet = projectService.updateProjectStatus(id);
+        return ResponseEntity.ok(projet);
+    }
+
 
 
 }

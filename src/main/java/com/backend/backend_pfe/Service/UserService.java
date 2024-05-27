@@ -39,4 +39,6 @@ public interface UserService {
     List<CasTest> getTestCasesForUserAndProject(Long userId, Long projectId);
 
     UserProjectDTO getUserProjectsData(Long userId);
+
+    long countTotalUsers();
 }

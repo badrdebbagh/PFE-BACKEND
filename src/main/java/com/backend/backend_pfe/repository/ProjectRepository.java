@@ -8,11 +8,14 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ProjectRepository extends JpaRepository<Projet , Long> {
 
-    List<Projet> findByNom(String nom);
+//    List<Projet> findByNom(String nom);
+
+    Optional<Projet> findByNom(String nom);
 
 
 //    List<Projet> findByUtilisateurs_Id(Long userId);

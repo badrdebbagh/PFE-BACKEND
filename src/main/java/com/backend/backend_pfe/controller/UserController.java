@@ -80,11 +80,6 @@ public class UserController {
         return ResponseEntity.ok(updatedUser);
     }
 
-//    @GetMapping("/{userId}/testcases")
-//    public ResponseEntity<List<CasTest>> getTestCasesForUser(@PathVariable Long userId) {
-//        List<CasTest> testCases = userService.getTestCasesForUser(userId);
-//        return ResponseEntity.ok(testCases);
-//    }
 
     @GetMapping("/user/{userId}/projects/{projectId}/testcases")
     public ResponseEntity<List<CasTest>> getTestCasesForUserAndProject(@PathVariable Long userId, @PathVariable Long projectId) {
@@ -97,6 +92,7 @@ public class UserController {
         UserProjectDTO data = userService.getUserProjectsData(userId);
         return ResponseEntity.ok(data);
     }
+
 
 
 

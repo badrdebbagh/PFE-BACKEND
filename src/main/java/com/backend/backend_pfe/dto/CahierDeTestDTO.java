@@ -7,7 +7,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CahierDeTestDTO {
-//        private long id;
+
 private Long cahierDeTestGlobalId;
         private String name;
         private String domaineName;
@@ -27,11 +27,6 @@ private Long cahierDeTestGlobalId;
         }
 
 
-//        public CahierDeTestDTO(Long id, String name, DomaineDTO domaine) {
-//                this.id = id;
-//                this.name = name;
-//                this.domaine = domaine;
-//        }
 
 
 

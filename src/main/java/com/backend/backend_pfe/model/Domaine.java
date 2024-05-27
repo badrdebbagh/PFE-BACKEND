@@ -18,6 +18,7 @@ public class Domaine {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+
     private String nom;
 
     @JsonIgnore

@@ -6,4 +6,7 @@ import java.util.List;
 
 public interface SousDomaineService {
     List<SousDomaine> getAllDomaines();
+
+
+    SousDomaine createSousDomaine(SousDomaine sousDomaine);
 }

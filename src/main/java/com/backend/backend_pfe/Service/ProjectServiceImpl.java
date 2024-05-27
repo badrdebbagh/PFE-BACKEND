@@ -33,16 +33,7 @@ public class ProjectServiceImpl implements ProjectService {
         this.domaineRepository = domaineRepository;
     }
 
-    @Override
-    public ResponseEntity<List<Projet>> getAllProjects() {
-        try {
-            List<Projet> projects = projectRepository.findAllWithDomaines();
-            return new ResponseEntity<>(projects, HttpStatus.OK);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return new ResponseEntity<>(new ArrayList<>(), HttpStatus.BAD_REQUEST);
-    }
+
 
     @Override
     public ResponseEntity<Projet> createProject(Projet projet) {
@@ -113,6 +104,28 @@ public class ProjectServiceImpl implements ProjectService {
 
         projet.getDomaines().add(domaine);
         return projectRepository.save(projet);
+    }
+
+    @Override
+
+
+    public Projet updateProjectStatus(Long projectId) {
+        Projet projet = projectRepository.findById(projectId)
+                .orElseThrow(() -> new RuntimeException("Project not found"));
+        projet.updateStatus();
+        return projectRepository.save(projet);
+    }
+
+
+    @Override
+    public ResponseEntity<List<Projet>> getAllProjects() {
+        try {
+            List<Projet> projects = projectRepository.findAllWithDomaines();
+            return new ResponseEntity<>(projects, HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return new ResponseEntity<>(new ArrayList<>(), HttpStatus.BAD_REQUEST);
     }
 
 
