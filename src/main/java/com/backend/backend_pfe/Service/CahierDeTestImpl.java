@@ -104,12 +104,25 @@ public class CahierDeTestImpl implements CahierDeTestService {
             for (Row row : sheet) {
                 if (row.getRowNum() == 0) continue; // Skip header row
 
-                String cahierDeTestName = row.getCell(0).getStringCellValue();
-                String fonctionnaliteName = row.getCell(1).getStringCellValue();
-                String casTestTitle = row.getCell(2).getStringCellValue();
-                String stepDescription = row.getCell(3).getStringCellValue();
-                String expectedResult = row.getCell(4).getStringCellValue();
-                String sousDomaineName = row.getCell(5).getStringCellValue(); // Assuming this is the 6th column
+                // Check and handle null cells
+                Cell cell0 = row.getCell(0);
+                Cell cell1 = row.getCell(1);
+                Cell cell2 = row.getCell(2);
+                Cell cell3 = row.getCell(3);
+                Cell cell4 = row.getCell(4);
+                Cell cell5 = row.getCell(5);
+
+                if (cell0 == null || cell1 == null || cell2 == null || cell3 == null || cell4 == null || cell5 == null) {
+                    System.out.println("Skipping row " + row.getRowNum() + " due to null values");
+                    continue; // Skip rows with null values
+                }
+
+                String cahierDeTestName = cell0.getStringCellValue();
+                String fonctionnaliteName = cell1.getStringCellValue();
+                String casTestTitle = cell2.getStringCellValue();
+                String stepDescription = cell3.getStringCellValue();
+                String expectedResult = cell4.getStringCellValue();
+                String sousDomaineName = cell5.getStringCellValue(); // Assuming this is the 6th column
 
                 // Fetch or create Project
                 Optional<Projet> projectOpt = projectRepository.findById(projectId);
@@ -184,6 +197,7 @@ public class CahierDeTestImpl implements CahierDeTestService {
             }
         }
     }
+
 
 
 
