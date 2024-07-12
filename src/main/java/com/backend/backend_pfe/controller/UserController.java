@@ -1,6 +1,7 @@
 package com.backend.backend_pfe.controller;
 
 import com.backend.backend_pfe.Service.UserService;
+import com.backend.backend_pfe.dto.LastLoginDTO;
 import com.backend.backend_pfe.dto.UserProjectDTO;
 import com.backend.backend_pfe.model.CasTest;
 import com.backend.backend_pfe.model.USER_ROLE_PROJECTS;
@@ -91,6 +92,12 @@ public class UserController {
     public ResponseEntity<UserProjectDTO> getUserProjectsData(@PathVariable Long userId) {
         UserProjectDTO data = userService.getUserProjectsData(userId);
         return ResponseEntity.ok(data);
+    }
+
+    @GetMapping("users/last-logins")
+    public ResponseEntity<List<LastLoginDTO>> getLastLogins() {
+        List<LastLoginDTO> lastLogins = userService.getLastLogins();
+        return ResponseEntity.ok(lastLogins);
     }
 
 

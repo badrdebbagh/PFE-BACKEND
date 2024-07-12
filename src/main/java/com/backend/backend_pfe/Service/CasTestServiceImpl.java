@@ -1,5 +1,7 @@
 package com.backend.backend_pfe.Service;
 
+import com.backend.backend_pfe.dto.ProjectTestCaseCountsDTO;
+import com.backend.backend_pfe.dto.TestProgressDTO;
 import com.backend.backend_pfe.model.*;
 import com.backend.backend_pfe.repository.*;
 import org.slf4j.LoggerFactory;
@@ -35,6 +37,9 @@ public class CasTestServiceImpl implements CasTestService{
 
     @Autowired
     private CahierDeTestRepository cahierDeTestRepository;
+
+    @Autowired
+    private TestResultRepository testResultRepository;
 
     private static final Logger logger = LoggerFactory.getLogger(CasTestServiceImpl.class);
 
@@ -123,5 +128,62 @@ public class CasTestServiceImpl implements CasTestService{
         UserModel user = userRepository.findByEmail(username);
         testCase.setUserModel(user);
         casTestRepository.save(testCase);
+    }
+
+    @Override
+    public long countTestCasesByProject(Long projectId) {
+        return casTestRepository.countTestCasesByProjectId(projectId);
+    }
+
+    @Override
+    public long countPassedTestsByProject(Long projectId) {
+        return casTestRepository.countPassedTestsByProject(projectId);
+    }
+
+    @Override
+    public long countFailedTestsByProject(Long projectId) {
+        return casTestRepository.countFailedTestsByProject(projectId);
+    }
+    @Override
+    public long countNotTestedCasesByProject(Long projectId) {
+        return casTestRepository.countNotTestedCasesByProjectId(projectId);
+    }
+
+    @Override
+    public TestProgressDTO getTestProgress(Long projectId) {
+        long totalTests = countTestCasesByProject(projectId);
+        long passedTests = countPassedTestsByProject(projectId);
+        long failedTests = countFailedTestsByProject(projectId);
+        long notTestedTests = countNotTestedCasesByProject(projectId);
+
+        return new TestProgressDTO(totalTests, passedTests, failedTests , notTestedTests);
+    }
+
+    @Override
+    public List<ProjectTestCaseCountsDTO> getAllProjectsTestCaseCounts() {
+        List<Projet> projects = projetRepository.findAll();
+
+        List<ProjectTestCaseCountsDTO> projectCounts = new ArrayList<>();
+
+        for (Projet project : projects) {
+            Long projectId = project.getId();
+
+            long total = casTestRepository.countByProjetId(projectId);
+            long passed = testResultRepository.countPassedTestsByProjectId(projectId);
+            long failed = testResultRepository.countFailedTestsByProjectId(projectId);
+            long notTested = casTestRepository.countNotTestedCasesByProjectId(projectId);
+
+            ProjectTestCaseCountsDTO dto = new ProjectTestCaseCountsDTO();
+            dto.setProjectId(projectId);
+            dto.setProjectName(project.getNom());
+            dto.setTotalTestCases(total);
+            dto.setPassedTestCases(passed);
+            dto.setFailedTestCases(failed);
+            dto.setNotTestedTestCases(notTested);
+
+            projectCounts.add(dto);
+        }
+
+        return projectCounts;
     }
 }

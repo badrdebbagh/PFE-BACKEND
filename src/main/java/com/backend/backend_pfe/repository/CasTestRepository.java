@@ -27,5 +27,24 @@ public interface CasTestRepository extends JpaRepository<CasTest, Long> {
 
     @Query("SELECT ct FROM CasTest ct WHERE ct.fonctionnalite.id IN :fonctionnaliteIds")
     List<CasTest> findCasTestsByFonctionnaliteIds(@Param("fonctionnaliteIds") List<Long> fonctionnaliteIds);
+
+    List<CasTest> findByCahierDeTestId(Long cahierDeTestId);
+
+    @Query("SELECT COUNT(ct) FROM CasTest ct WHERE ct.projet.id = :projectId")
+    long countTestCasesByProjectId(@Param("projectId") Long projectId);
+
+    @Query("SELECT COUNT(tr) FROM TestResult tr WHERE tr.testCaseDescription.casTest.projet.id = :projectId AND tr.status = 'OK'")
+    long countPassedTestsByProject(Long projectId);
+
+    @Query("SELECT COUNT(tr) FROM TestResult tr WHERE tr.testCaseDescription.casTest.projet.id = :projectId AND tr.status = 'KO'")
+    long countFailedTestsByProject(Long projectId);
+
+    @Query("SELECT COUNT(ct) FROM CasTest ct WHERE ct.projet.id = :projectId AND ct.id NOT IN (SELECT tr.testCaseDescription.casTest.id FROM TestResult tr)")
+    long countNotTestedCasesByProjectId(@Param("projectId") Long projectId);
+
+    @Query("SELECT COUNT(ct) FROM CasTest ct WHERE ct.projet.id = :projectId")
+    long countByProjetId(@Param("projectId") Long projectId);
+
+
 }
 

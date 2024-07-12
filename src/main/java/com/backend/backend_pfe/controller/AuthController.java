@@ -2,6 +2,7 @@ package com.backend.backend_pfe.controller;
 
 import com.backend.backend_pfe.config.JwtProvider;
 import com.backend.backend_pfe.model.USER_ROLE;
+import com.backend.backend_pfe.model.UserModel;
 import com.backend.backend_pfe.repository.UserRepository;
 import com.backend.backend_pfe.request.LoginRequest;
 import com.backend.backend_pfe.response.AuthResponse;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 
 @RestController
@@ -45,6 +47,13 @@ public ResponseEntity<AuthResponse> signin(@RequestBody LoginRequest req){
     Authentication authentication = authenticate(username , password);
 
     String jwt = jwtProvider.generateToken(authentication);
+
+    UserModel user = userRepository.findByEmail(username);
+    if (user == null) {
+        throw new RuntimeException("User not found");
+    }
+    user.setLastLogin(LocalDateTime.now());
+    userRepository.save(user);
 
     AuthResponse authResponse = new AuthResponse();
     authResponse.setJwt(jwt);

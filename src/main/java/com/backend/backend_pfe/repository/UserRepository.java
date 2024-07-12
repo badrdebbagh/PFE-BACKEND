@@ -24,6 +24,7 @@ public interface UserRepository extends JpaRepository<UserModel, Long> {
 
     @Query("SELECT pa.project FROM ProjectAssignment pa WHERE pa.user.id = :userId")
     List<Projet> findProjectsByUserId(@Param("userId") Long userId);
+    List<UserModel> findTop10ByOrderByLastLoginDesc();
 
 
 

@@ -47,4 +47,14 @@ public class TestResultController {
         }
     }
 
+    @GetMapping("test-results/count/ok")
+    public long countOkResults(@RequestParam Long projectId, @RequestParam Long domaineId, @RequestParam Long sousDomaineId) {
+        return testResultService.countOkResultsByProjectDomaineAndSousDomaine(projectId, domaineId, sousDomaineId);
+    }
+
+    @GetMapping("test-results/count/ko")
+    public long countKoResults(@RequestParam Long projectId, @RequestParam Long domaineId, @RequestParam Long sousDomaineId) {
+        return testResultService.countKoResultsByProjectDomaineAndSousDomaine(projectId, domaineId, sousDomaineId);
+    }
+
 }

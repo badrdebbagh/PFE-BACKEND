@@ -1,6 +1,7 @@
 package com.backend.backend_pfe.Service;
 
 
+import com.backend.backend_pfe.dto.LastLoginDTO;
 import com.backend.backend_pfe.dto.UserProjectDTO;
 import com.backend.backend_pfe.model.CasTest;
 import com.backend.backend_pfe.model.USER_ROLE_PROJECTS;
@@ -41,4 +42,6 @@ public interface UserService {
     UserProjectDTO getUserProjectsData(Long userId);
 
     long countTotalUsers();
+
+    List<LastLoginDTO> getLastLogins();
 }

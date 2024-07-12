@@ -1,7 +1,9 @@
 package com.backend.backend_pfe.config;
 
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import jakarta.servlet.http.HttpServletRequest;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
@@ -59,4 +61,6 @@ return new CorsConfigurationSource() {
     PasswordEncoder passwordEncoder(){
     return new BCryptPasswordEncoder();
     }
+
+
 }

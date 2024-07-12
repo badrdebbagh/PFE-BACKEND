@@ -1,10 +1,12 @@
 package com.backend.backend_pfe.repository;
 
+import com.backend.backend_pfe.model.ProjectStatus;
 import com.backend.backend_pfe.model.Projet;
 import com.backend.backend_pfe.model.UserModel;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -24,4 +26,10 @@ List<Projet> findProjectsByUserId(Long userId);
 
     @Query("SELECT p FROM Projet p LEFT JOIN FETCH p.domaines")
     List<Projet> findAllWithDomaines();
+
+    @Query("SELECT COUNT(p) FROM Projet p WHERE p.status = :status")
+    long countByStatus(@Param("status") ProjectStatus status);
+
+    List<Projet> findByStatus(ProjectStatus status);
+
 }

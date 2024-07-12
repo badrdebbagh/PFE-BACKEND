@@ -13,4 +13,9 @@ public interface TestResultService {
     List<TestResultDTO> getTestResultsByCahierDeTestId(Long cahierDeTestId);
 
     List<TestResultDTO> getTestResultsByDescriptionAndCahier(Long testCaseDescriptionId, Long cahierDeTestId);
+
+
+    long countOkResultsByProjectDomaineAndSousDomaine(Long projectId, Long domaineId, Long sousDomaineId);
+
+    long countKoResultsByProjectDomaineAndSousDomaine(Long projectId, Long domaineId, Long sousDomaineId);
 }

@@ -33,4 +33,6 @@ public interface CahierDeTestRepository extends JpaRepository<CahierDeTest , Lon
     Optional<CahierDeTest> findByName(String name);
 
     Optional<CahierDeTest> findByNameAndDomaineAndProjet(String name, Domaine domaine, Projet projet);
+
+    List<CahierDeTest> findByProjetId(Long projetId);
 }

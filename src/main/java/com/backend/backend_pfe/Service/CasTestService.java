@@ -1,5 +1,7 @@
 package com.backend.backend_pfe.Service;
 
+import com.backend.backend_pfe.dto.ProjectTestCaseCountsDTO;
+import com.backend.backend_pfe.dto.TestProgressDTO;
 import com.backend.backend_pfe.model.CasTest;
 
 import java.util.List;
@@ -20,4 +22,12 @@ public interface CasTestService {
     void executeTestCase(Long testCaseId);
 
     void assignTestCaseToUser(Long testCaseId, String username);
+
+    long countTestCasesByProject(Long projectId);
+    long countPassedTestsByProject(Long projectId);
+    long countFailedTestsByProject(Long projectId);
+    long countNotTestedCasesByProject(Long projectId);
+    TestProgressDTO getTestProgress(Long projectId);
+
+    List<ProjectTestCaseCountsDTO> getAllProjectsTestCaseCounts();
 }

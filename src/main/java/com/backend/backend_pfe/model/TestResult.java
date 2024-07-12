@@ -26,6 +26,8 @@ public class TestResult {
 //    private LocalDateTime runDate;
     private String comment;
 
+    private int attemptNumber;
+
     @ManyToOne
     @JoinColumn(name = "test_case_description_id", nullable = true)
     @JsonIgnore
@@ -35,5 +37,9 @@ public class TestResult {
     @JoinColumn(name = "cahier_de_test_id", nullable = true)
     @JsonIgnore
     private CahierDeTest cahierDeTest;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "test_iteration_id")
+    private TestIteration testIteration;
 }
 

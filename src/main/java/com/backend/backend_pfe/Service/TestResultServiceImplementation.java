@@ -30,6 +30,9 @@ public class TestResultServiceImplementation implements TestResultService {
 
         @Autowired
         private ProjectRepository projectRepository;
+
+        @Autowired
+        private ProjectService projectService;
         public void saveTestResult(TestResultDTO testResultDTO) {
             TestResult testResult = new TestResult();
             testResult.setStatus(testResultDTO.getStatus());
@@ -51,7 +54,10 @@ public class TestResultServiceImplementation implements TestResultService {
 
             Projet projet = cahierDeTest.getProjet();
 
-            projet.updateStatus();
+            // Update the project status
+            projectService.updateProjectStatus(projet.getId());
+
+            // Explicitly save the project again if needed
             projectRepository.save(projet);
         }
 
@@ -93,5 +99,14 @@ public class TestResultServiceImplementation implements TestResultService {
                 ))
                 .collect(Collectors.toList());
     }
+
+    public long countOkResultsByProjectDomaineAndSousDomaine(Long projectId, Long domaineId, Long sousDomaineId) {
+        return testResultRepository.countOkResultsByProjectDomaineAndSousDomaine(projectId, domaineId, sousDomaineId);
+    }
+
+    public long countKoResultsByProjectDomaineAndSousDomaine(Long projectId, Long domaineId, Long sousDomaineId) {
+        return testResultRepository.countKoResultsByProjectDomaineAndSousDomaine(projectId, domaineId, sousDomaineId);
+    }
+
 
 }

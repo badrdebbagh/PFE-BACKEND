@@ -1,9 +1,12 @@
 package com.backend.backend_pfe.Service;
 
 
+import com.backend.backend_pfe.dto.LastLoginDTO;
 import com.backend.backend_pfe.dto.UserProjectDTO;
 import com.backend.backend_pfe.model.*;
 import com.backend.backend_pfe.repository.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -279,28 +282,33 @@ return new ResponseEntity<>(newUser  , HttpStatus.CREATED);
 //        return userProjectDTO;
 //    }
 
-
+    private static final Logger logger = LoggerFactory.getLogger(ProjectServiceImpl.class);
     @Override
     public UserProjectDTO getUserProjectsData(Long userId) {
         // Fetch projects assigned to the user
         List<Projet> projets = userRepository.findProjectsByUserId(userId);
         List<Long> projectIds = projets.stream().map(Projet::getId).collect(Collectors.toList());
+        logger.info("Projects assigned to user {}: {}", userId, projectIds);
 
         // Fetch domains assigned to the user
         Set<Domaine> userDomaines = domaineRepository.findByUsers_Id(userId);
         List<Long> domainIds = userDomaines.stream().map(Domaine::getId).collect(Collectors.toList());
+        logger.info("Domains assigned to user {}: {}", userId, domainIds);
 
         // Fetch cahier de tests related to these domains and projects
         List<CahierDeTest> cahierDeTests = cahierDeTestRepository.findCahierDeTestsByDomainIdsAndProjectIds(domainIds, projectIds);
         List<Long> cahierDeTestIds = cahierDeTests.stream().map(CahierDeTest::getId).collect(Collectors.toList());
+        logger.info("CahierDeTests for user {}: {}", userId, cahierDeTestIds);
 
         // Fetch functionalities related to each cahier de test
         List<Fonctionnalité> fonctionnalites = fonctionnaliteRepository.findFonctionnalitesByCahierDeTestIds(cahierDeTestIds);
         List<Long> fonctionnaliteIds = fonctionnalites.stream().map(Fonctionnalité::getId).collect(Collectors.toList());
+        logger.info("Functionalities for user {}: {}", userId, fonctionnaliteIds);
 
         // Fetch test cases related to each functionality
         List<CasTest> casTests = casTestRepository.findCasTestsByFonctionnaliteIds(fonctionnaliteIds);
         List<Long> casTestIds = casTests.stream().map(CasTest::getId).collect(Collectors.toList());
+        logger.info("Test cases for user {}: {}", userId, casTestIds);
 
         // Fetch test case descriptions related to each test case
         List<TestCaseDescription> testCaseDescriptions = testCaseDescriptionRepository.findByCasTest_IdIn(casTestIds);
@@ -332,12 +340,21 @@ return new ResponseEntity<>(newUser  , HttpStatus.CREATED);
 
         // Structure the data
         UserProjectDTO userProjectDTO = new UserProjectDTO(projets, cahierDeTests, fonctionnalites, casTests);
+        logger.info("UserProjectDTO for user {}: {}", userId, userProjectDTO);
         return userProjectDTO;
     }
 
     @Override
     public long countTotalUsers() {
         return userRepository.count();
+    }
+
+    @Override
+    public List<LastLoginDTO> getLastLogins() {
+        List<UserModel> users = userRepository.findTop10ByOrderByLastLoginDesc();
+        return users.stream()
+                .map(user -> new LastLoginDTO(user.getFirstName(), user.getLastName(), user.getLastLogin()))
+                .collect(Collectors.toList());
     }
 
 
